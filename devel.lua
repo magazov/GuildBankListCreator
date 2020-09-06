@@ -420,6 +420,12 @@ function GBLC:HandleChatCommand(input)
 		-- to add, we need to backtrack a step
 		-- on the next time we're adding stuff
 		---------------------------------------
+			local statResult = ""
+			if bagItems[i].stats ~= nil then
+				for key, value in pairs(bagItems[i].stats) do	    
+	    			statResult = statResult .. key .. ":" .. value .. "," 
+				end
+			end
 
 			if not UseCSV then
 				if finalCount > 0 then
@@ -427,7 +433,7 @@ function GBLC:HandleChatCommand(input)
 				end
 			else
 				if finalCount > 0 then
-					itemlistsort[(i-antii)] = bagItems[i].itemName .. ',' .. finalCount .. ',' .. wowheadlink
+					itemlistsort[(i-antii)] = bagItems[i].itemName .. ',' .. finalCount .. ',' .. wowheadlink .. ',' .. statResult
 				end
 			end
 
@@ -661,6 +667,7 @@ function GBLC:GetBagItems()
 			if itemID then
 				local sName, sLink, iRarity, iLevel, iMinLevel, sType, sSubType, iStackCount = GetItemInfo(itemID)
 				local stacked = false
+				local itemStats = GetItemStats(link)
 				
 				if ((StackItems) and (#bagItems > 0)) then
 					for stackitem = 1, #bagItems do
@@ -676,7 +683,8 @@ function GBLC:GetBagItems()
 					bagItems[#bagItems + 1] = {					
 						itemName = sName,
 						itemID = itemID,
-						count = count
+						count = count,
+						stats = itemStats
 					}
 				end
 			end
